@@ -1,3 +1,61 @@
+const SCOPES = [
+  "https://www.googleapis.com/auth/drive",
+  "https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/userinfo.profile",
+].join(" ");
+const oauth = {
+  clientId: () => process.env.GOOGLE_CLIENT_ID || "",
+  clientSecret: () => process.env.GOOGLE_CLIENT_SECRET || "",
+  authUrl(redirectUri, state) {
+    const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+    url.searchParams.set("client_id", oauth.clientId());
+    url.searchParams.set("redirect_uri", redirectUri);
+    url.searchParams.set("response_type", "code");
+    url.searchParams.set("scope", SCOPES);
+    url.searchParams.set("access_type", "offline");
+    url.searchParams.set("prompt", "consent select_account");
+    url.searchParams.set("state", state);
+    return url.toString();
+  },
+  async exchangeCode(code, redirectUri) {
+    const body = new URLSearchParams({
+      client_id: oauth.clientId(),
+      client_secret: oauth.clientSecret(),
+      code,
+      redirect_uri: redirectUri,
+      grant_type: "authorization_code",
+    });
+    const res = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    });
+    if (!res.ok) {
+      throw new Error(`Google token exchange failed (${res.status}): ${await res.text()}`);
+    }
+    const data = await res.json();
+    return {
+      refresh_token: data.refresh_token,
+      access_token: data.access_token,
+      expires_in: data.expires_in,
+    };
+  },
+  async getAccount(accessToken) {
+    const res = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!res.ok) return { email: "", name: "" };
+    const data = await res.json();
+    return { email: data.email || "", name: data.name || "" };
+  },
+  async revoke(token) {
+    if (!token) return;
+    await fetch("https://oauth2.googleapis.com/revoke?token=" + encodeURIComponent(token), {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    }).catch(() => {}); 
+  },
+};
 async function refresh(row) {
   const body = new URLSearchParams({
     client_id: row.clientId,
@@ -140,6 +198,7 @@ async function deleteFile(token, fileId) {
   return { success: true };
 }
 module.exports = {
+  oauth,
   refresh,
   listFiles,
   viewFile,

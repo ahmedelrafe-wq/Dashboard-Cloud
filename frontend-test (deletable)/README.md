@@ -15,7 +15,7 @@ A standalone web interface to test all backend API endpoints.
 
 In the main project folder:
 ```bash
-cd /root/cloud-file-dashboard
+cd cloud-file-dashboard
 npm start
 ```
 
@@ -33,9 +33,10 @@ The backend runs on `http://localhost:3000` by default.
 ### 3. Test the features
 
 **Provider selection**
-- The top row shows Google, Dropbox, and OneDrive
-- Green checkmark = connected, red X = not configured
-- Click a connected provider to select it
+- The sidebar shows Google and Dropbox
+- Click **Connect** to open the provider's sign-in popup, pick an account, and approve permissions
+- Once connected, the card shows the signed-in email; click the card body to browse its files
+- Click **Logout** to disconnect and connect a different account
 
 **List & filter files**
 - Once a provider is selected, files load automatically
@@ -81,7 +82,13 @@ const API_BASE = "http://localhost:3000/api";
 - Check that `config.js` has the correct API URL
 
 **Providers show "Not connected"?**
-- Run `npm run seed` in the main folder to store credentials from `.env` into MongoDB
+- Click **Connect** and sign in through the popup
+
+**"Not set up (missing client id/secret)" / Connect button disabled?**
+- The provider's `CLIENT_ID` / `CLIENT_SECRET` are missing from the backend `.env`. Add them and restart the backend.
+
+**Popup blocked?**
+- Allow popups for this page in your browser, then click Connect again
 
 **Files don't load?**
 - Check the browser console (F12) for errors

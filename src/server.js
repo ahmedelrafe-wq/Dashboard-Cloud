@@ -12,6 +12,8 @@ app.get("/", (req, res) => {
     message: "Cloud File Dashboard API is running.",
     tryThis: [
       "GET  /api/providers",
+      "GET  /api/google/auth/start       (sign in via popup)",
+      "POST /api/google/logout           (disconnect the account)",
       "GET  /api/google/files?type=image&order=desc",
       "POST /api/google/files            (multipart form field: file)",
       "GET  /api/google/files/:id/view",

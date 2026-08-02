@@ -6,6 +6,8 @@ const providerSchema = new mongoose.Schema({
   refreshToken:  { type: String, default: "" },                  
   accessToken:   { type: String, default: "" },                  
   expiresAt:     { type: Number, default: 0 },                   
+  connectedEmail:{ type: String, default: "" },                  
+  connectedName: { type: String, default: "" },                  
 });
 const Provider = mongoose.model("Provider", providerSchema);
 async function connectDB() {

@@ -1,7 +1,6 @@
 const google = require("./google");
 const dropbox = require("./dropbox");
-const onedrive = require("./onedrive");
-const adapters = { google, dropbox, onedrive };
+const adapters = { google, dropbox };
 const PROVIDER_NAMES = Object.keys(adapters);
 function getAdapter(name) {
   const adapter = adapters[name];

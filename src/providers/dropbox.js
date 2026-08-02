@@ -1,3 +1,59 @@
+const oauth = {
+  clientId: () => process.env.DROPBOX_CLIENT_ID || "",
+  clientSecret: () => process.env.DROPBOX_CLIENT_SECRET || "",
+  authUrl(redirectUri, state) {
+    const url = new URL("https://www.dropbox.com/oauth2/authorize");
+    url.searchParams.set("client_id", oauth.clientId());
+    url.searchParams.set("redirect_uri", redirectUri);
+    url.searchParams.set("response_type", "code");
+    url.searchParams.set("token_access_type", "offline");
+    url.searchParams.set("force_reapprove", "true");
+    url.searchParams.set("state", state);
+    return url.toString();
+  },
+  async exchangeCode(code, redirectUri) {
+    const body = new URLSearchParams({
+      code,
+      grant_type: "authorization_code",
+      client_id: oauth.clientId(),
+      client_secret: oauth.clientSecret(),
+      redirect_uri: redirectUri,
+    });
+    const res = await fetch("https://api.dropbox.com/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    });
+    if (!res.ok) {
+      throw new Error(`Dropbox token exchange failed (${res.status}): ${await res.text()}`);
+    }
+    const data = await res.json();
+    return {
+      refresh_token: data.refresh_token,
+      access_token: data.access_token,
+      expires_in: data.expires_in,
+    };
+  },
+  async getAccount(accessToken) {
+    const res = await fetch("https://api.dropboxapi.com/2/users/get_current_account", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!res.ok) return { email: "", name: "" };
+    const data = await res.json();
+    return {
+      email: data.email || "",
+      name: (data.name && data.name.display_name) || "",
+    };
+  },
+  async revoke(token) {
+    if (!token) return;
+    await fetch("https://api.dropboxapi.com/2/auth/token/revoke", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(() => {});
+  },
+};
 async function refresh(row) {
   const body = new URLSearchParams({
     grant_type: "refresh_token",
@@ -135,6 +191,7 @@ async function deleteFile(token, fileId) {
   return { success: true };
 }
 module.exports = {
+  oauth,
   refresh,
   listFiles,
   viewFile,

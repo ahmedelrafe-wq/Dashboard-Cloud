@@ -1,7 +1,7 @@
 {
   "name": "cloud-file-dashboard",
   "version": "1.0.0",
-  "description": "Backend API dashboard for files stored in Google Drive, Dropbox and OneDrive",
+  "description": "Backend API dashboard for files stored in Google Drive and Dropbox, with OAuth sign-in",
   "type": "commonjs",
   "main": "src/server.js",
   "scripts": {
