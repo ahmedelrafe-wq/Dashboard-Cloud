@@ -1,0 +1,4 @@
+# Do NOT commit these:
+node_modules/
+.env
+data.db
