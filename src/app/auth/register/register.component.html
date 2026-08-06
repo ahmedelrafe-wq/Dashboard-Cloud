@@ -1,0 +1,38 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>📁 Rouleru</h1>
+      <p>إنشاء حساب جديد</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>👤 الاسم</label>
+        <input type="text" formControlName="name" placeholder="أدخل اسمك الكامل">
+        <small *ngIf="formControls['name'].invalid && formControls['name'].touched">الاسم مطلوب</small>
+      </div>
+
+      <div class="form-group">
+        <label>📧 البريد الإلكتروني</label>
+        <input type="email" formControlName="email" placeholder="أدخل بريدك الإلكتروني">
+        <small *ngIf="formControls['email'].invalid && formControls['email'].touched">بريد إلكتروني صحيح مطلوب</small>
+      </div>
+
+      <div class="form-group">
+        <label>🔒 كلمة المرور</label>
+        <input type="password" formControlName="password" placeholder="كلمة المرور (6 أحرف)">
+        <small *ngIf="formControls['password'].invalid && formControls['password'].touched">كلمة المرور مطلوبة</small>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">⚠️ {{ errorMessage }}</div>
+
+      <button type="submit" [disabled]="isLoading || registerForm.invalid">
+        {{ isLoading ? '⏳ جاري التسجيل...' : 'تسجيل' }}
+      </button>
+    </form>
+
+    <div class="register-footer">
+      لديك حساب؟ <a routerLink="/login">تسجيل الدخول</a>
+    </div>
+  </div>
+</div>
