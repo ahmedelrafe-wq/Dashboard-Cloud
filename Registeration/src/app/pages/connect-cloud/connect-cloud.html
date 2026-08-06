@@ -1,0 +1,27 @@
+<div class="container mt-5" style="max-width: 400px;">
+  <h4 class="mb-4 text-center fw-bold">Connect Cloud</h4>
+
+  <!-- Google Drive Option -->
+  <div class="d-flex align-items-center justify-content-between mb-3 p-2 border rounded">
+    <span class="fw-semibold">Google Drive</span>
+    <button 
+      class="btn btn-primary btn-sm"
+      [disabled]="isLoadingGoogle"
+      (click)="connectGoogleDrive()">
+      <span *ngIf="!isLoadingGoogle">Connect</span>
+      <span *ngIf="isLoadingGoogle" class="spinner-border spinner-border-sm"></span>
+    </button>
+  </div>
+
+  <!-- Dropbox Option -->
+  <div class="d-flex align-items-center justify-content-between mb-3 p-2 border rounded">
+    <span class="fw-semibold">Dropbox</span>
+    <button 
+      class="btn btn-primary btn-sm"
+      [disabled]="isLoadingDropbox"
+      (click)="connectDropbox()">
+      <span *ngIf="!isLoadingDropbox">Connect</span>
+      <span *ngIf="isLoadingDropbox" class="spinner-border spinner-border-sm"></span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+/* background color*/
+.register-wrapper {
+  background-color: #bfa1eb; 
+}
+
+/* card */
+.register-card {
+  border-radius: 24px;
+}
+
+/* button sign in*/
+.btn-purple {
+  background-color: #6342b4;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+  background-color: #4f3395;
+}
+
+/* color link*/
+.text-purple {
+  color: #6342b4;
+}
+
+/* size background image */
+.left-side-bg img {
+  max-height: 100%;
+  min-height: 100%;
+}
+
+/* inputs styling */
+.input-group-text, .form-control {
+  border-color: #e2e8f0;
+}
+
+.form-control:focus {
+  border-color: #6342b4;
+}
