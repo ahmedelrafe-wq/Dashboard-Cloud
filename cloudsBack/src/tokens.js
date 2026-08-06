@@ -1,9 +1,7 @@
 const { Credential } = require("./db");
 const getAdapter = require("./providers");
 
-// Return a valid access token for THIS user + provider, refreshing if needed.
-// App client id/secret come from the adapter's .env (not from the DB row),
-// because they identify your app, not the user.
+
 async function getValidAccessToken(userId, providerName) {
   const row = await Credential.findOne({ userId, provider: providerName });
   if (!row || !row.refreshToken) {
@@ -18,7 +16,6 @@ async function getValidAccessToken(userId, providerName) {
   }
 
   const adapter = getAdapter(providerName);
-  // Adapter refresh() needs the refresh token + the app credentials from .env.
   const result = await adapter.refresh({
     refreshToken: row.refreshToken,
     clientId: adapter.oauth.clientId(),
